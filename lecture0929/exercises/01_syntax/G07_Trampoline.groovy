@@ -3,6 +3,7 @@ factorial = { int n, def accu = 1G ->
     if (n < 2) return accu
     factorial.trampoline(n - 1, n * accu)
 }
+// Because of trampoline it uses only two function calls and trampolines between them
 factorial = factorial.trampoline()
 
 assert factorial(1)    == 1

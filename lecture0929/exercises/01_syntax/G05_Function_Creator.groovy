@@ -3,8 +3,9 @@ Closure computeTax = {rate, amount -> amount + amount * rate / 100}
 //TASK Implement the 'factory' function leveraging the "computeTax" function above
 //so that it creates correct taxation functions
 
+//Similar to partial application
 Closure taxatorFactory = {rate ->
-
+        return {amount -> computeTax(rate, amount)}
 }
 
 Closure lowRateVat = taxatorFactory 5

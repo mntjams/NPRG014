@@ -4,6 +4,16 @@ class Plane {
     private boolean engineOn = false
     private int altitude = 0
 
+        void performCommand(String s, Closure c) {
+               def clone = c.clone()
+               clone.delegate = this
+               clone.call()
+               // this.with(code)
+        }
+
+        void call(description, code){
+                performCommand(description code)
+        }
     private void startEngine() {
         println 'Starting the engine'
         engineOn = true
@@ -46,6 +56,6 @@ println '*** We are in flight now ***'
 plane.performCommand('Land', land)
 
 //TASK Make the following code pass, too. Use the call() method to handle function calls on the Plane objects.
-//plane('Take off', takeoff)
-//println '*** We are in flight now ***'
-//plane('Land', land)
+plane('Take off', takeoff)
+println '*** We are in flight now ***'
+plane('Land', land)
