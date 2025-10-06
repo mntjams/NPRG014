@@ -5,6 +5,7 @@ trait Flying {
 
 trait Quacking {
     void quack() {println "Quack!"}
+    void fly() {println "What" }
 }
 
 class Duck implements Flying, Quacking {}

@@ -19,8 +19,16 @@ final doc = builder.order() {
             amount 25
             currency 'CZK'
         }
+        sugar()
+        cream()
     }
-    vodka() {
+    vodka(count: 10) {
+        price {
+            amount 30
+            currency 'CZK'
+        }
+        size('big')
+        
     }    
 }
 

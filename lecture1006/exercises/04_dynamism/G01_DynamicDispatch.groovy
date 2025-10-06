@@ -13,5 +13,6 @@ println 'Second attempt: ' + calculate(a)
 
 println 'Third attempt: ' + calculate("12015" as Integer)
 
+// This one cannot be resolved at compile time
 if (System.currentTimeMillis() % 2 == 0) a = 'Hi there!'
 println 'Fourth attempt: ' + calculate(a)

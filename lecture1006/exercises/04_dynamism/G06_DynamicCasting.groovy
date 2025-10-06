@@ -41,6 +41,7 @@ def report(String msg) {println "LOG: $msg"}
 if(m) {
     report(m as String)
 }
+// If m is not empty, return m, else return the 'Empty' string
 println(m?:"Empty")
 
 println "============= LOAN ============="

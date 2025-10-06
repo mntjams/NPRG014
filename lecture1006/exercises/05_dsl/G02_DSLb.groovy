@@ -1,5 +1,5 @@
-def o1 = order pizza with tomato and mushrooms to "Malostranske namesti"
-def o2 = order cake with plums and apples and cream to "Malostranske namesti"
+def o1 = order pizza with tomato and mushrooms to "Malostranske namesti", 25
+def o2 = order cake with plums and apples and cream to "Malostranske namesti", 25
 def o3 = order pizza menuDuJour() to "Malostranske namesti"
 
 //TASK Add support for house numbers in address (aka to "Malostranske namesti", 25)
@@ -48,6 +48,10 @@ abstract class Food {
         order
     }
     
+    def to(address, number){
+    order.address = "$address $number"
+    order
+    }
 
     abstract String description();
 

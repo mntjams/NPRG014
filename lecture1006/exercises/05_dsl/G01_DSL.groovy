@@ -6,7 +6,7 @@ println o1
 println 'done'
 
 
-def order(requestedMeal) {
+def order(String requestedMeal) {
     new Order(meal: requestedMeal)
 }
 

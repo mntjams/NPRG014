@@ -1,3 +1,4 @@
+// aka EXTENSION METHODS
 class MyMath {
     static int factorial(Integer value) {
         value > 1 ? value * factorial(value - 1) : 1

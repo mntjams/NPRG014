@@ -14,6 +14,15 @@ create house
 move furniture
 '''
 
+def b = new Binding()
+b.robot = helperRobot
+GroovyShell shell = new GroovyShell(b)
+shell.evaluate("""
+robot.with{
+    $myCode
+}
+""")
+
 
 class Robot {
     def propertyMissing(String name) {

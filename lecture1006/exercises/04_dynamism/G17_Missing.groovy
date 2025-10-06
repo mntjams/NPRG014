@@ -21,4 +21,3 @@ def methodMissing(String name, args) {
     println "$name ${args.join(', ')}"
 }
 
-

@@ -16,9 +16,12 @@ class Receptionist {
         'Stop, or I call the police!'
     }
 
+    // Shorthand for 'Object'
     String welcome(final visitor) {
         'We\'re full, please go away!'
     }
+    
+    String call(def who) {welcome(who)}
 }
 
 final receptionist = new Receptionist()
@@ -29,8 +32,9 @@ final greetings = visitors.collect {
                   }
 greetings.each {println it}
 
+// Make object behave like a method - override method 'call' !!!
 //TASK Make the following code pass
-//println receptionist(new BusinessPerson())
-//println receptionist(new Turist())
-//println receptionist(new Burglar())
-//println receptionist(new Homeless())
+println receptionist(new BusinessPerson())
+println receptionist(new Turist())
+println receptionist(new Burglar())
+println receptionist(new Burglar())
