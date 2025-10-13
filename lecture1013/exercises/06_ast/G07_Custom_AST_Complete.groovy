@@ -23,13 +23,13 @@ import static org.codehaus.groovy.control.CompilePhase.SEMANTIC_ANALYSIS
 
 @Retention(RetentionPolicy.SOURCE)
 @Target([ElementType.METHOD])
-@GroovyASTTransformationClass("RequiresTransformation")
+@GroovyASTTransformationClass("RequiresTransformation") // This maps it to the class bellow
 public @interface Requires {
     String value() default "true";
 }
 
 
-@GroovyASTTransformation(phase = SEMANTIC_ANALYSIS)
+@GroovyASTTransformation(phase = SEMANTIC_ANALYSIS) // Works in semantic analysis, this affects how the nodes look, they look different in different phases
 public class RequiresTransformation implements ASTTransformation {
 
     def annotationType = Requires.class.name
@@ -44,6 +44,8 @@ public class RequiresTransformation implements ASTTransformation {
         true
     }
 
+    // Gets the method that was anotated
+    // We get 2 nodes, the annotation on index 0 and the actual method on index 1
     public void visit(ASTNode[] astNodes, SourceUnit source) {
         if (!checkNodes(astNodes, annotationType)) {
             addError("Internal error on annotation", astNodes[0], source);
@@ -51,7 +53,8 @@ public class RequiresTransformation implements ASTTransformation {
         }
         MethodNode annotatedMethod = astNodes[1]
         def annotationExpression = astNodes[0].members.value
-
+        
+        // Checks that the annotation is valid
         if (annotationExpression.class != ConstantExpression) {
             addError("The condition is not a constant expression", astNodes[0], source);
             return
@@ -60,6 +63,7 @@ public class RequiresTransformation implements ASTTransformation {
         String annotationValueString = annotationExpression.value
         BlockStatement block = createStatements(annotationValueString)
 
+        // Get a body of a method and insert it at the beginning of it
         def methodStatements = annotatedMethod.code.statements
         methodStatements.add(0, block)
     }
@@ -70,7 +74,8 @@ public class RequiresTransformation implements ASTTransformation {
                 throw new Exception('Precondition violated: {$clause}')
             }
         """
-
+        
+        // Create AST node from the text
         AstBuilder ab = new AstBuilder()
         List<ASTNode> res = ab.buildFromString(CompilePhase.SEMANTIC_ANALYSIS, statements)
         BlockStatement bs = res[0]

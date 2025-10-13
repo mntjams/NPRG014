@@ -28,11 +28,15 @@ public class NumberConversionTransformation implements ASTTransformation {
 
     public void visit(ASTNode[] astNodes, SourceUnit source) {
         ClassNode annotatedClass = astNodes[1]
-                
+        
+        // Create a node for an integeer
         ClassNode clazz = org.codehaus.groovy.ast.ClassHelper.make(Integer)
+        // Create a node for static method that parses int
         ASTNode call = new StaticMethodCallExpression(clazz, "parseInt", new VariableExpression('valueToConvert'))
+        // The body of the function
         ASTNode stmt = new ExpressionStatement(call)
         
+        // Create a parameter node
         def param = new Parameter(ClassHelper.STRING_TYPE, "valueToConvert")
         annotatedClass.addMethod("convertToNumber", Opcodes.ACC_PUBLIC, ClassHelper.Integer_TYPE, [param] as Parameter[], [] as ClassNode[], stmt)
 

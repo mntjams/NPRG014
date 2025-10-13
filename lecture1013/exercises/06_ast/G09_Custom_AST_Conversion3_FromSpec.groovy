@@ -52,6 +52,8 @@ public class NumberConversionTransformation3 implements ASTTransformation {
         List<ASTNode> exprStmt = ab.buildFromSpec {
             method('add', Opcodes.ACC_PUBLIC, Integer) {
                 parameters {
+                    parameter 'a' : Integer.class
+                    parameter 'b' : Integer.class
                 }
                 exceptions { }
                 block {
@@ -81,4 +83,4 @@ new Calculator()
 println calculator.convertToNumber("20")
 //TASK: Enable the add(a, b) method that sums a and b
 //TIP: Seach AstSpecificationCompiler for the available builder methods
-//println calculator.add(3, 5)
+println calculator.add(3, 5)
