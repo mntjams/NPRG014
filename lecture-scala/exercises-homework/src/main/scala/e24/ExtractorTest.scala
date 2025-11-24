@@ -8,7 +8,7 @@ package e24
 object EMail:
   def apply(name: String, domain: String) = name + "@" + domain
 
-  def unapply(email: String) =
+  def unapply(email: String) : Option[(String, String)] =
     val parts = email split "@"
 
     if parts.length == 2 then
@@ -41,5 +41,5 @@ object ExtractorTest:
     validateEmail(EMail("doe", "xyz.natur.cuni.cz"))
     validateEmail("XXX")
 
-    val name @ DomainRev(dc1, dc2, _*) = "bures@d3s.mff.cuni.cz"
+    val name `@` DomainRev(dc1, dc2, _*) = "bures@d3s.mff.cuni.cz"
     println(s"$name @ ... . $dc2 . $dc1")

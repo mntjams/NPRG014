@@ -5,16 +5,136 @@
 // It will feature a toString() method that will pretty-print the expression tree into a string with the same semantics, as verified by the assert on the last line.
 // This means that parentheses must be placed where necessary with respect to the mathematical operator priorities.
 // Change or add to the code in the script. Reuse the infrastructure code at the bottom of the script.
-class NumericExpressionBuilder extends BuilderSupport {
 
+abstract class ExpressionItem {
+    abstract int getPrecedence()
 }
 
-class Item {
+class BinaryOperation extends ExpressionItem {
+    String operator
+    ExpressionItem left, right
+
+    private final Map PRECEDENCES = [
+        '+': 1,
+        '-': 1,
+        '*': 2,
+        '/': 2,
+        '^': 3
+    ]
+
+    BinaryOperation(String op) {
+        this.operator = op
+    }
+
     @Override
-    public String toString() {
-        super.toString()
+    int getPrecedence() {
+        PRECEDENCES[operator]
+    }
+
+    @Override
+    String toString() {
+        def leftStr = parenthesize(left)
+        def rightStr = parenthesize(right)
+
+        return "$leftStr $operator $rightStr"
+    }
+
+    String parenthesize(ExpressionItem child) {
+        if(child.getPrecedence() < getPrecedence()) {
+            def childStr = child.toString()
+            return "($childStr)"
+        }
+
+        return child.toString()
     }
 }
+
+class NumberItem extends ExpressionItem {
+    Number value
+
+    NumberItem(Number val) { this.value = val }
+
+    @Override
+    String toString() { value.toString() }
+
+    @Override
+    int getPrecedence() { 100 }
+}
+
+class VariableItem extends ExpressionItem {
+    String value
+
+    VariableItem(String val) { this.value = val }
+
+    @Override
+    String toString() { value }
+
+    @Override
+    int getPrecedence() { 100 }
+}
+
+
+class NumericExpressionBuilder extends BuilderSupport {
+
+    boolean firstItem = true
+    ExpressionItem root = null
+
+    @Override
+    protected Object createNode(Object name) {
+        def opMap = ['+': '+', '-': '-', '*': '*', '/': '/', 'power': '^']
+
+        if (opMap.containsKey(name.toString())) {
+            return new BinaryOperation(opMap[name.toString()])
+        }
+
+        return null
+    }
+
+    @Override
+    protected Object createNode(Object name, Map attributes) {
+        switch (name.toString()) {
+            case 'number':
+                return new NumberItem(attributes.value)
+            case 'variable':
+                return new VariableItem(attributes.value)
+        }
+
+        return null
+    }
+
+    @Override
+    protected Object createNode(Object name, Map attributes, Object value) {
+        // Unsupported by the builder
+        return null
+    }
+    
+    @Override
+    protected Object createNode(Object name, Object value) {
+        // Unsupported by the builder
+        return null
+    }
+
+    @Override
+    protected void setParent(Object parent, Object child) {
+        if (firstItem){
+            firstItem = false
+            root = parent
+        }
+        
+        if (parent instanceof BinaryOperation) {
+            if (parent.left == null) {
+                parent.left = child
+            } else {
+                parent.right = child
+            }
+        }
+    }
+    
+    def rootItem() {
+        return root
+    }
+}
+
 //------------------------- Do not modify beyond this point!
 
 def build(builder, String specification) {

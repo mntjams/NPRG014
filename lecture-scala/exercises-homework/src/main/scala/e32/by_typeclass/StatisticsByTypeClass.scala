@@ -40,12 +40,12 @@ object StatisticsByTypeClass:
     def minus(x: Int, y: Int) = x - y
     def divideByInt(x: Int, y: Int) = x / y
 
-
 class Duration(val totalSeconds: Double):
   def this(min: Int, sec: Double) = this(min * 60 + sec)
 
   val minutes = (totalSeconds / 60).toInt
   val seconds = totalSeconds - minutes * 60
+  //TODO: implement numberline duration in the same way as above
 
   override def toString = s"$minutes:$seconds"
 

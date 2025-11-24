@@ -15,7 +15,7 @@ class B(value: Int) extends A(value)
 
 class C(value: Int) extends A(value)
 
-
+// 'T' has to be at lease 'A' (to be comparable since A has 'compare' method)
 class SortedList[T <: A] private (private val list: List[T]):
 	
 	def this() = this(Nil)
@@ -24,6 +24,7 @@ class SortedList[T <: A] private (private val list: List[T]):
 	
 	def tail = new SortedList[T](list.tail)
 
+    // 'U' has to be at most 'T'
 	def enlist[U >: T <: A](x: U): SortedList[U] =
 		var result: List[U] = Nil
 		var remaining = list

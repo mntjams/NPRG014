@@ -16,6 +16,13 @@ object ControlTest:
 		for i <- 1 to times do
 			op
 
+	def ifThenElse[T](condition: Boolean)(exprTrue: => T)(exprFalse: => T): T =
+		if (condition) {
+            exprTrue;
+        } else {
+            exprFalse;
+        }
+
 
 	def main(args: Array[String]): Unit =
 		withPrintWriter("out.txt") {
@@ -29,6 +36,7 @@ object ControlTest:
 		/* ASSIGNMENT:
 		 * Define a function ifThenElse which can be used as demonstrated below
  
+		*/
 		ifThenElse(2 > 1) { // should print "True branch"
 			println("True branch")
 		} {
@@ -40,7 +48,6 @@ object ControlTest:
 		val result = ifThenElse(x > y) { x } { y }
 		println(result) // should print "3"
 
-		*/
 
 
 

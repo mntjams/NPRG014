@@ -7,6 +7,8 @@ package e23
 
 class Expr:
 	def simplifyUsing(func: PartialFunction[Expr, Expr]) =
+        // PartialFunction has the "apply" method
+        // and the "isDefinedAt" method
 		if func.isDefinedAt(this) then func(this) else this
 
 
@@ -20,6 +22,10 @@ object ExpressionsPF:
 	def main(args: Array[String]): Unit =
 
 		val expr = BinOp("*", Var("x"), Number(1))
+        // Multiple bodies of the PartialFunction
+        // There is no pattern matching, the bodies are qualified by a case
+        // and the appropriate body is chosen based on the arguments
+        // and if there is no good match, undefined value is returned
 		val sExpr = expr.simplifyUsing {
 			case BinOp("+", Number(0), e) => e
 			case BinOp("+", e, Number(0)) => e

@@ -20,7 +20,9 @@ object TypeInference:
 	 * Change the getShape declaration so that the application 
 	 * prints out "Drawing general shape"
 	 */
+    // Return type is 'Rectangular'
 	def getShape(id: Int) =
+        // If else in Scala is an expression so it returns a value
 		if id == 0 then
 			new Rectangle
 		else

@@ -8,6 +8,10 @@ package e01
  * - semicolon inference
  * - block inference via indenting - braces optional, optional end
  */
+// 'object' - creates a class HelloWorld and a single instance
+// It becomes a singleton
+// Therefore all the functions are esentially "static" methods
+// because with singleton the difference between a class and an instance blurs
 object HelloWorld:
 	def main(args: Array[String]): Unit =
 		println("Hello world")

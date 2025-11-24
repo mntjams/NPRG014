@@ -10,47 +10,69 @@ Person Joe aged 24
 
 */
 
-/*
 package h2
 
 import scala.collection.mutable.ListBuffer
 
 
 trait WithExplicitState:
-  /* add necessary declarations here */
+  type State
 
-  protected def state: /* add the correct type here */
-  protected def state_=(state: /* add the correct type here */): Unit
+  protected def state: State
+  protected def state_=(state: State): Unit
 
 
 class PersonState(val name: String, val age: Int)
 
 class Person extends WithExplicitState:
-  /* Implement this class. It should have no knowledge of the trait History. It should use instances of PersonState as the state. */
+  type State = PersonState
 
+  override protected var state = PersonState("No Name", -1)
+
+  override def toString: String =
+    s"Person ${state.name} aged ${state.age}"
+
+  def setName(name: String): this.type =
+    state = new PersonState(name, state.age)
+    this
+
+  def setAge(age: Int): this.type =
+    state = new PersonState(state.name, age)
+    this
 
 type RGBColor = (Int, Int, Int)
 class ThingState(val name: String, val color: RGBColor)
 
 class Thing extends WithExplicitState:
-  /* Implement this class. It should have no knowledge of the trait History. It should use instances of ThingState as the state. */
+  type State = ThingState
+
+  override protected var state = new ThingState("No Name", new RGBColor(-1, -1, -1))
+
+  override def toString: String =
+    s"Thing ${state.name} with color ${state.color}"
+
+  def setName(name: String): this.type =
+    state = new ThingState(name, state.color)
+    this
+
+  def setColor(color: RGBColor): this.type =
+    state = new ThingState(state.name, color)
+    this
 
 
 
 trait History:
-    /* Add necessary declarations here. This trait should have no knowledge of classes Person, Thing, PersonState, ThingState.
-       It should depend only on the trait WithExplicitState.
-    */
+    this: WithExplicitState =>
 
-    val hist = ListBuffer.empty[/* add the correct type here */]
+    val hist = ListBuffer.empty[this.State]
 
-    def checkpoint(): /* add the correct type here */ =
+    def checkpoint(): this.type =
       hist.append(state)
       this
 
     def history = hist.toList
 
-    def restoreTo(s: /* add the correct type here */): /* add the correct type here */ =
+    def restoreTo(s: this.State): this.type =
       state = s
       this
 
@@ -83,4 +105,3 @@ object ExplicitStateTest:
     // The line below must not compile. It should complain about an incompatible type.
     // box.restoreTo(johnsPrevState)
 
-*/

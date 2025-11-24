@@ -7,7 +7,9 @@ package e29
 object CovariantQueue:
 	def apply() = new CovariantQueue(Nil, Nil)
 
+// The '+T' means it is covariant in the type parameter 'T'
 class CovariantQueue[+T] private (
+        // 'this' means instance level of privateness
 		private[this] var leading: List[T],
 		private[this] var trailing: List[T]
 	):

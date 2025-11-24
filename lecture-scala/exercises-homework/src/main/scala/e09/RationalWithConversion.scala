@@ -23,6 +23,7 @@ class Rational(n: Int, d: Int):
 	def * (that: Rational) = Rational(numer * that.numer, denom * that.denom)
 	def / (that: Rational) = Rational(numer * that.denom, denom * that.numer)
 	def unary_- = new Rational(-numer, denom)
+    // def ~ (dummy: R.type) = this
 
 	override def toString = s"${numer}/${denom}"
 	private def gcd(a: Int, b: Int): Int = if (b == 0) a else gcd(b, a % b)

@@ -1,6 +1,9 @@
 package e22
 
 abstract class Expr
+// By saying "case" the class is equiped with many perks (functions, etc.)
+// that make the class act like an immutable struct
+// (we could write those ourselves, but it's just a unnecessary boilerplate)
 case class Var(name: String) extends Expr
 case class Number(num: Double) extends Expr
 case class UnOp(operator: String, arg: Expr) extends Expr
@@ -16,11 +19,13 @@ object Expressions:
 			case eSimpl => UnOp("-", eSimpl)
 
 		case BinOp("+", e, f) => (simplify(e), simplify(f)) match
+			case (Number(n1), Number(n2)) => Number(n1+n2)
 			case (Number(0), fSimpl) => fSimpl   // Adding zero
 			case (eSimpl, Number(0)) => eSimpl   // Adding zero
 			case (eSimpl, fSimpl) => BinOp("+", eSimpl, fSimpl)
 
 		case BinOp("*", e, f) => (simplify(e), simplify(f)) match
+			case (Number(n1), Number(n2)) => Number(n1*n2)
 			case (Number(1), fSimpl) => fSimpl   // Adding zero
 			case (eSimpl, Number(1)) => eSimpl   // Adding zero
 			case (eSimpl, fSimpl) => BinOp("*", eSimpl, fSimpl)
@@ -37,9 +42,9 @@ object Expressions:
 		 * Enhance the simplify method in such a way that it can evaluate operations on numbers.
 		 * E.g. it should reduce BinOp("*", Number(2), Number(3)) to Number(6).
 		 * After this enhancement, the statement below should produce BinOp("*", Var(x), Number(2))
+		 */
 
 		val expr2 = BinOp("*", Var("x"), BinOp("*", BinOp("+", Number(1), Number(1)), Number(1)))
 		println(expr2)
 		println(simplify(expr2))
 
-		 */

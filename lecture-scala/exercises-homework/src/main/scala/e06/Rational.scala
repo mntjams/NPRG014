@@ -18,8 +18,14 @@ class Rational(n: Int, d: Int):
 	val numer = n / g
 	val denom = d / g
 
+    // Auxiliary constructor
+    // At some point needs to call the primary ctor
 	def this(n: Int) = this(n, 1)
 
+    // There is no concept of operator overloading
+    // Scala just allows 'funny names' of methods
+    // Scala allows you to drop the dot and even the space (you cannot have an identified a+ for example)
+    // If a method has a single param you don't need to write the parentheses
 	def + (that: Rational) = Rational(numer * that.denom + that.numer * denom, denom * that.denom)
 	def + (i: Int) = Rational(numer + i * denom, denom)
 	def - (that: Rational) = Rational(numer * that.denom - that.numer * denom, denom * that.denom)
@@ -28,7 +34,9 @@ class Rational(n: Int, d: Int):
 	def * (i: Int) = Rational(numer * i, denom)
 	def / (i: Int) = Rational(numer, denom * i)
 	def / (that: Rational) = Rational(numer * that.denom, denom * that.numer)
+	def <-^ (i: Int) = Rational(i, denom)
 	def unary_- = Rational(-numer, denom)
+	def unary_! = Rational(denom, numer)
 
 	// In future versions of Scala, methods with non-symbolic names will only be allowed as
 	// operators if they are declared with the infix modifier.
@@ -37,6 +45,8 @@ class Rational(n: Int, d: Int):
 	override def toString = s"${numer}/${denom}"
 	private def gcd(a: Int, b: Int): Int = if b == 0 then a else gcd(b, a % b)
 
+object R:
+   def ~(i: Int) = Rational(i)
 
 object RationalTest:
 	def main(args: Array[String]): Unit =
@@ -57,6 +67,7 @@ object RationalTest:
 		 *
 		 * println(c <-^ 11)
 		 */
+		println(c <-^ 11)
 
 		/* ASSIGNMENT 2
 		 * Implement a unary operator ! that inverts the rational
@@ -64,7 +75,7 @@ object RationalTest:
 		 *
 		 * println(!c)
 		 */
-
+		 println(!c)
 
 		/* ASSIGNMENT 3
 		 * Make is possible to prefix an integer number with R ~ to
@@ -73,3 +84,4 @@ object RationalTest:
 		 *
 		 * println(R ~ 5/3)
 		 */
+		 println(R ~ 5/3)

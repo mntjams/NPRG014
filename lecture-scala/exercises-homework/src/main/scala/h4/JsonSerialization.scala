@@ -8,9 +8,54 @@ class PhoneNo(val prefix: Int, val number: Int)
 class Person(val firstName: String, val lastName: String, val phone: PhoneNo)
 class Address(val person: Person, val street: String, val city: String)
 
-// ... add the necessary classes
+trait JsonSerializer[T]:
+  def serialize(obj: T): String
 
-/*
+  extension (x: T)
+      def toJson: String = serialize(x)
+
+object JsonSerializer:
+  given stringSerializer: JsonSerializer[String] with
+    def serialize(s: String) = s"\"$s\""
+
+  given intSerializer: JsonSerializer[Int] with
+    def serialize(s: Int) = s.toString
+
+  given listSerializer[T](using JsonSerializer[T]): JsonSerializer[List[T]] with
+    def serialize(lst: List[T]) =
+      val lines = for entry <- lst yield
+        val value = summon[JsonSerializer[T]].toJson(entry)
+        s"${value}"
+
+      s"[ ${lines.mkString(", ")} ]"
+
+  given mapSerializer[K, V](using JsonSerializer[K])(using JsonSerializer[V]): JsonSerializer[Map[K, V]] with
+    def serialize(map: Map[K, V]) =
+      val lines = for (key, value) <- map yield
+        val keySer = summon[JsonSerializer[K]].toJson(key)
+        val valueSer = summon[JsonSerializer[V]].toJson(value)
+        s"${keySer}: ${valueSer}"
+
+      s"{ ${lines.mkString(", ")} }"
+
+  given phoneNoSerializer: JsonSerializer[PhoneNo] with
+    def serialize(phoneNo: PhoneNo) =
+      summon[JsonSerializer[Map[String, Int]]].serialize(Map("prefix" -> phoneNo.prefix, "number" -> phoneNo.number))
+
+  given personSerializer: JsonSerializer[Person] with
+    def serialize(person: Person) =
+      val firstNameSer = summon[JsonSerializer[String]].serialize(person.firstName)
+      val lastNameSer = summon[JsonSerializer[String]].serialize(person.lastName)
+      val phoneSer = summon[JsonSerializer[PhoneNo]].serialize(person.phone)
+      s"{ \"firstName\": ${firstNameSer}, \"lastName\": ${lastNameSer}, \"phone\": ${phoneSer} }"
+
+  given addressSerializer: JsonSerializer[Address] with
+    def serialize(address: Address) =
+      val personSer = summon[JsonSerializer[Person]].serialize(address.person)
+      val streetSer = summon[JsonSerializer[String]].serialize(address.street)
+      val citySer = summon[JsonSerializer[String]].serialize(address.city)
+      s"{ \"person\": ${personSer}, \"street\": ${streetSer}, \"city\": ${citySer} }"
+
 object JsonSerializerTest:
   def main(args: Array[String]): Unit =
     import JsonSerializer.given
@@ -39,5 +84,3 @@ object JsonSerializerTest:
 
     val f = List(e1, e2)
     println(f.toJson) // [ { "person": { "firstName": "John", "lastName": "Doe", "phone": { "prefix": 1, "number": 123456 } }, "street": "Bugmore Lane 3", "city": "Lerfourche" }, { "person": { "firstName": "Jane", "lastName": "X", "phone": { "prefix": 420, "number": 345678 } }, "street": "West End Woods 1", "city": "Holmefefer" } ]
-
-*/

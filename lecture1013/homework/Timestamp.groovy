@@ -26,7 +26,7 @@ import static org.codehaus.groovy.ast.tools.GeneralUtils.*
 @Target([ElementType.TYPE])
 @GroovyASTTransformationClass("CreatedAtTransformation")
 public @interface CreatedAt {
-    String name() default "";
+    String name() default "timestamp";
 }
 
 
@@ -34,32 +34,36 @@ public @interface CreatedAt {
 public class CreatedAtTransformation implements ASTTransformation {
 
     public void visit(ASTNode[] astNodes, SourceUnit source) {
+    
+        // Add a timestamp field
+        ClassNode clazz = astNodes[1]
+        final initializer = new AstBuilder().buildFromString('System.currentTimeMillis()')
+        clazz.addField('timestamp', Opcodes.ACC_PRIVATE, ClassHelper.long_TYPE, initializer[0].statements[0].expression)
+        
+        // All existing methods increase timestamp
+        final methods = clazz.getMethods()
+        methods.each { method ->
+            final newCode = new AstBuilder().buildFromString(SEMANTIC_ANALYSIS, """
+            if (System.currentTimeMillis() > timestamp + 1000) 
+            { 
+                timestamp = System.currentTimeMillis(); 
+            }""")[0]
+            
+            method.code.statements.add(0, newCode)
+        }
+        
+        // Add clearTimestamp() method
+        List<ASTNode> code = new AstBuilder().buildFromString(SEMANTIC_ANALYSIS, '''
+            timestamp = 0;
+        ''')
+        clazz.addMethod("clearTimestamp", Opcodes.ACC_PUBLIC, ClassHelper.VOID_TYPE, [] as Parameter[], [] as ClassNode[], code[0])
 
-        //...
-        // TASK Ensure the annotated class has a private long field holding the time of instantiation of the object.
-        // Also, generate a public final method returning the value stored in the field. The name of the method should be configurable through 
-        // the annotation 'name' parameter.
-        // Additionally, all existing methods of the class should be enhanced so that they reset the time stored in the field to the current time,
-        // whenever they are called, but ONLY if more than 1 second has elapsed since the latest update to the time stored in the field.
-        // A new method, named "clearTimestamp()" must be added to the class. This method sets the time stored in the field to "0".
-                
-        // Fill in the missing AST generation code to make the script pass
-        // You can take inspiration from exercises
-        // Documentation and hints:
-        // http://docs.groovy-lang.org/docs/next/html/documentation/
-        // http://docs.groovy-lang.org/docs/groovy-latest/html/api/org/codehaus/groovy/ast/package-summary.html
-        // http://docs.groovy-lang.org/docs/groovy-latest/html/api/org/codehaus/groovy/ast/expr/package-summary.html
-        // http://docs.groovy-lang.org/docs/groovy-latest/html/api/org/codehaus/groovy/ast/stmt/package-summary.html
-        // http://docs.groovy-lang.org/docs/groovy-latest/html/api/org/codehaus/groovy/ast/tools/package-summary.html        
-        // http://docs.groovy-lang.org/docs/groovy-latest/html/api/org/codehaus/groovy/ast/tools/GeneralUtils.html
-        
-        // Use ClassHelper.long_TYPE to specify a long type.
-        // buildFromString() returns an array, which holds a BlockStatement for the passed-in code as its first element.
-        // ClassNode.addField() accepts an expression, which can be obtained from a BlockStatement as blockStatement.statements.expression
-        // ClassNode.addMethod() accepts a BlockStatement
-        
-        //TODO Implement this method
-        
+        // Add a public final method returning the timestamp
+        List<ASTNode> res = new AstBuilder().buildFromString('''
+            timestamp
+        ''')
+        String name = astNodes[0].members.name.value
+        clazz.addMethod("$name", Opcodes.ACC_PUBLIC & Opcodes.ACC_FINAL, ClassHelper.long_TYPE, [] as Parameter[], [] as ClassNode[], res[0])
     }
 }
 

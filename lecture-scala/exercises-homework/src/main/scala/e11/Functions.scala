@@ -8,12 +8,26 @@ object Functions:
 		if (xs.length <= 1) then
 			xs
 		else
+            // Indexing in Scala is done with '()'
 			val pivot = xs(xs.length / 2)
 			Array.concat(
 					sort(xs.filter(pivot.>)),
 					xs.filter(pivot.==),
 					sort(xs.filter(pivot.<))
 			)
+
+    /*
+	def sort(xs: Array[Int], compare: [Int, Int] => Int): Array[Int] =
+		if (xs.length <= 1) then
+			xs
+		else
+			val pivot = xs(xs.length / 2)
+			Array.concat(
+					sort(xs.filter(compare(pivot, _) > 0), compare)
+					xs.filter(compare(pivot, _) == 0), compare)
+					sort(xs.filter(compare(pivot, _) < 0, compare))
+			)
+      */
 
 	def concatArray[T](items: Array[T], fcn: T => String) =
 		val bld = new StringBuilder
@@ -33,6 +47,9 @@ object Functions:
 		val someNumbers = -10 to 5
 		println(someNumbers.filter(x => x > 0))
 
+        // You can drop lambda parameter if there is only one
+        // and replace it with an underscore
+        // Every use of underscore counts as a new parameter
 		println(someNumbers.filter(_ > 0))
 
 

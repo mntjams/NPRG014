@@ -9,6 +9,8 @@ import java.io.PrintStream
  * - class parameters, calling the superclass
  */
 
+// Always one (primary) constructor
+// Sets the given PrintStream value to a where variable
 class Logger(where: PrintStream):
 	def log(msg: String): Unit =
 		where.println(msg)
@@ -17,7 +19,10 @@ class Logger(where: PrintStream):
 /* ASSIGNMENT:
  * Change the AppLogger object to print: ">> " + msg
  */
-object AppLogger extends Logger(Console.out)
+object AppLogger extends Logger(Console.out):
+    // Idk if this works
+    override def log(msg: String): Unit =
+      super.log(">>" + msg)
 
 
 object LoggingExample:

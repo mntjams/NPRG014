@@ -9,7 +9,8 @@ package e05
  * - apply method
  * - type parameters
  */
-
+// 1st private = private ctor
+// other privates = those fields are private
 class MyList[T] private(private val item: T, private val next: MyList[T]):
   override def toString: String =
     val result = new StringBuilder
@@ -25,8 +26,10 @@ class MyList[T] private(private val item: T, private val next: MyList[T]):
 
     result.toString()
 
-
+// Has the same name as the class
+// Is able to call private methods of the class
 object MyList:
+  // Because this method is named 'apply', we can omit .apply in Variable.apply(...)
   def apply[T](items: T*): MyList[T] =
     var result: MyList[T] = null
 
