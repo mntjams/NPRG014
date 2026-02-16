@@ -9,6 +9,7 @@ import groovyx.gpars.group.PGroup
 def engineCheck = new DataflowVariable()
 def tyrePressure = new DataflowVariable()
 def radarOn = new DataflowVariable()
+def electricityOn = new DataflowVariable()
 
 task {
     println "Checking the engine"
@@ -26,10 +27,22 @@ task {
 
 task {
     println "Turning radar on"
+    if(!electricityOn.get()){
+        println "Radar did not detect electricity"
+        return
+    }
+    println "Radar detected electricity"
     sleep 1000
     def result = System.currentTimeMillis() % 2 == 0 ? true : false
     radarOn << result
     println "Radar ${result ? 'ok' : 'failed'}"
+}
+
+task {
+    println "Checking electricity"
+    sleep 1000
+    electricityOn << true
+    println "Electricity ok"
 }
 //TASK: Radar can only be turned on after electricity is checked. Add an electricity-checking task
 //and wire it so that the radar can only turned on after the electricity check finishes correctly.

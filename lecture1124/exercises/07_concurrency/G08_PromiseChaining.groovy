@@ -29,6 +29,8 @@ println p1.get()
 // Asynchronous and non-blocking (reactive)
 def p2 = task {download("")} | hash
 def p3 = task {loadFile("")} | hash
+// You could also do this:
+// def p4 = task { compare(p2.get(), p3.get()) }
 def p4 = whenAllBound(p2, p3, compare)
 println p4.get()
 

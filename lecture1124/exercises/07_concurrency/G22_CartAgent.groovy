@@ -12,17 +12,19 @@ interface Cart {
 //TODO Correct the implementation of the CartImpl class using Agents so that it is thread-safe and correct in concurrent execution
 
 class CartImpl implements Cart {
-    private contents = []
+    private contents = new Agent([])
 
     void addIfNotPresent(String product) {
-        if (!contents.contains(product)) {
-            sleep 10 //simulate calculation here
-            contents << product
+        contents.send { cart ->
+                if (!cart.contains(product)) {
+                    sleep 10 //simulate calculation here
+                    cart << product 
+            }
         }
     }
 
     List getContents() {
-        contents.asImmutable()
+        contents.val
     }
 }
 
